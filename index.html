@@ -199,3 +199,51 @@ status("Sharing didn’t work here. Try opening this page in Chrome on your phon
 </script>
 </body>
 </html>
+<script>
+function tidy(t){return t.replace(/(^|[.!?]\s+)([a-z])/g,function(m,a,b){return a+b.toUpperCase();});}
+function makeCard(){
+var o=v("occasion"),s=v("style"),n=v("name")||"friend",raw=document.getElementById("words").value.trim();
+var own=raw.length>70||raw.indexOf("\n")>-1;
+var w=raw.replace(/[.!\s]+$/,"");
+if(!own&&(o==="thank you"||o==="birthday")&&!/^I(\s|')/.test(w))w=w.charAt(0).toLowerCase()+w.slice(1);
+X={a:v("x1")||(o==="gift"?"a special gift":"a day soon"),b:v("x2")||"a time that suits you",c:v("x3")||"a lovely place",d:v("x4")||"special evening"};
+var titles={"thank you":"Thank you, "+n,"birthday":"Happy Birthday, "+n,"thinking of you":"Thinking of you, "+n,"partner":"Will you be mine, "+n+"?","marry":"Will you marry me, "+n+"?","date":"A date with you, "+n,"gift":"A gift for you, "+n};
+idx=(idx+1)%3;
+var card=document.getElementById("card");
+card.style.display="block";card.style.animation="none";void card.offsetWidth;card.style.animation="";
+applyTheme(s);
+document.getElementById("orn").innerText=ornFor(s,o);
+document.getElementById("orn2").innerText=ornSmall(s,o);
+document.getElementById("title").innerText=titles[o];
+document.getElementById("msg").innerText=own?raw:tidy(fill(TPL[o][idx],n,w));
+document.getElementById("shareBox").style.display="block";
+status("");picP=null;getPic();
+}
+async function makePicBlob(){
+var s=v("style"),o=v("occasion"),th=TH[s],W=1080;
+try{await document.fonts.load('84px "Dancing Script"');await document.fonts.load('italic 44px "Playfair Display"');}catch(e){}
+var title=document.getElementById("title").innerText,msg=plain();
+var L=msg.length,fs=L>300?36:(L>150?42:46),lh=L>300?54:(L>150?62:70);
+var TF='84px "Dancing Script",cursive',MF='italic '+fs+'px "Playfair Display",Georgia,serif';
+var m=document.createElement("canvas").getContext("2d");
+m.font=TF;var yT=wrap(m,title,W/2,380,820,100,false);
+m.font=MF;var yM=wrap(m,msg,W/2,yT+50,820,lh,false);
+var H=Math.max(1350,yM+300);
+var c=document.createElement("canvas");c.width=W;c.height=H;
+var ctx=c.getContext("2d");
+var g=ctx.createLinearGradient(0,0,W*0.4,H);g.addColorStop(0,th.c1);g.addColorStop(1,th.c2);
+ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+if(th.stars){for(var i=0;i<110;i++){var x=Math.random()*W,y=Math.random()*H,r=1+Math.random()*3;
+ctx.globalAlpha=.35+Math.random()*.65;ctx.fillStyle="#fff";ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fill();
+if(r>3){ctx.fillRect(x-r*2.5,y-.8,r*5,1.6);ctx.fillRect(x-.8,y-r*2.5,1.6,r*5);}}ctx.globalAlpha=1;}
+ctx.strokeStyle=th.gold;ctx.lineWidth=6;ctx.strokeRect(50,50,W-100,H-100);
+ctx.lineWidth=2;ctx.strokeRect(78,78,W-156,H-156);
+ctx.fillStyle=th.ink;ctx.textAlign="center";
+ctx.font="80px serif";ctx.fillText(ornFor(s,o),W/2,230);
+ctx.font=TF;wrap(ctx,title,W/2,380,820,100,true);
+ctx.font=MF;wrap(ctx,msg,W/2,yT+50,820,lh,true);
+ctx.font="56px serif";ctx.fillText(ornSmall(s,o),W/2,H-190);
+ctx.font="28px Arial";ctx.globalAlpha=.7;ctx.fillText("Made with Gratitude Card Maker",W/2,H-135);ctx.fillText("rikkirayer.github.io/Cardmaker",W/2,H-95);ctx.globalAlpha=1;
+return new Promise(function(r){c.toBlob(r,"image/png");});
+}
+               </script>
