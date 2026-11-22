@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -48,7 +49,7 @@ button.alt{background:transparent;color:var(--accent);border:1px solid var(--acc
 <button id="go" onclick="makeCard()">Make my card</button>
 <div id="card"><div id="inner">
 <div id="orn"></div><div id="title"></div><div id="msg"></div><div id="orn2"></div>
-<div class="brand">Made with Gratitude Card Maker</div>
+<div class="brand">Made with Gratitude Card Maker<br>rikkirayer.github.io/Cardmaker</div>
 </div></div>
 <div id="shareBox" style="display:none">
 <button onclick="shareNow()" style="font-size:18px;padding:14px;margin-top:16px">Send it 💌</button>
@@ -109,8 +110,10 @@ var TPL={
 "{n}, there is something I would love to do for you: give you {a} 🎁 [[{w}. ]]Not for anything in return, only to see your face light up 💝 May I?"]
 };var X={a:"",b:"",c:"",d:""},idx=Math.floor(Math.random()*3);
 var EX={"date":["Date (e.g. Saturday 5 December)","Time (e.g. 7pm)","Place (restaurant, park, cinema…)","Kind of date (dinner, picnic, movie…)"],"gift":["What would you like to give them? (e.g. a car, a phone, flowers)"]};
+var PH={"thank you":"What are you thankful for? (e.g. always helping me)","birthday":"What do you love about them? (e.g. your kindness)"};
 function v(i){return document.getElementById(i).value.trim();}
-function setExtra(){var o=v("occasion"),d=document.getElementById("extra"),e=EX[o];d.style.display=e?"block":"none";for(var i=1;i<=4;i++){var f=document.getElementById("x"+i);f.style.display=e&&e[i-1]?"block":"none";f.placeholder=e&&e[i-1]?e[i-1]:"";}}
+function setExtra(){var o=v("occasion"),d=document.getElementById("extra"),e=EX[o];d.style.display=e?"block":"none";for(var i=1;i<=4;i++){var f=document.getElementById("x"+i);f.style.display=e&&e[i-1]?"block":"none";f.placeholder=e&&e[i-1]?e[i-1]:"";}document.getElementById("words").placeholder=PH[o]||"Say it in your own words, in a full sentence (optional)";}
+setExtra();
 function setStars(on){
 var card=document.getElementById("card");
 card.querySelectorAll(".star").forEach(function(e){e.remove();});
@@ -125,6 +128,7 @@ return t.replace(/\[\[(.*?)\]\]/g,function(_,s){return w?s:"";}).replace(/\{n\}/
 var picP=null;
 function makeCard(){
 var o=v("occasion"),s=v("style"),n=v("name")||"friend",w=v("words").replace(/[.!\s]+$/,"");
+if((o==="thank you"||o==="birthday")&&!/^I(\s|')/.test(w))w=w.charAt(0).toLowerCase()+w.slice(1);
 X={a:v("x1")||(o==="gift"?"a special gift":"a day soon"),b:v("x2")||"a time that suits you",c:v("x3")||"a lovely place",d:v("x4")||"special evening"};
 var titles={"thank you":"Thank you, "+n,"birthday":"Happy Birthday, "+n,"thinking of you":"Thinking of you, "+n,"partner":"Will you be mine, "+n+"?","marry":"Will you marry me, "+n+"?","date":"A date with you, "+n,"gift":"A gift for you, "+n};
 idx=(idx+1)%3;
@@ -173,7 +177,7 @@ ctx.font="80px serif";ctx.fillText(ornFor(s,o),W/2,230);
 ctx.font=TF;wrap(ctx,title,W/2,380,820,100,true);
 ctx.font=MF;wrap(ctx,msg,W/2,yT+50,820,70,true);
 ctx.font="56px serif";ctx.fillText(ornSmall(s,o),W/2,H-190);
-ctx.font="28px Arial";ctx.globalAlpha=.7;ctx.fillText("Made with Gratitude Card Maker",W/2,H-120);ctx.globalAlpha=1;
+ctx.font="28px Arial";ctx.globalAlpha=.7;ctx.fillText("Made with Gratitude Card Maker",W/2,H-135);ctx.fillText("rikkirayer.github.io/Cardmaker",W/2,H-95);ctx.globalAlpha=1;
 return new Promise(function(r){c.toBlob(r,"image/png");});
 }
 function getPic(){if(!picP)picP=makePicBlob();return picP;}
